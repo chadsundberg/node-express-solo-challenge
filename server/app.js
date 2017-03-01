@@ -1,7 +1,7 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var path = require('path');
-var bodyParser = require('body-parser');
 var port = 3000;
 
 
@@ -26,43 +26,24 @@ var jokes = [
 ];
 
 // static file requests
-app.use(express.static('server/public/views'));
-app.use(express.static('server/public/scripts'));
-
+app.use(express.static('server/public'));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
 
 // routes
-app.get('/', function(req, res) {  // node has already created this req and res object
-  // res.send is necessary to always give a response from the server.
-  res.send(jokes);
-});
-
-app.post('jokes/new', function(req, res){  // this is the syntax for router.post
-  var newestJoke = req.body;  //data() on the client side become req.body here.
-  if (newestJoke.whoseJoke == '') {
-    res.sendStatus(400);
-  } else {
-    jokes.push(newestJoke);
-    res.sendStatus(200);  // success message
-  }
-});
-
-
-
-
-// app.post('/joke/new', function(req, res){
-//   var newJoke = req.body;
-//   var whoseJoke =
-//   var jokeQuestion =
-//   var punchLine =    ;
-//  res.send();
-// });
 
 
 // Send index.html file
-app.get('/views', function(req, res) {
+app.get('/', function(req, res) {
   res.sendFile(path.resolve('server/public/views/index.html'));
+});
+
+app.get('/jokes', function(req, res) {
+  res.send(jokes);
+});
+
+app.post('/jokes/new', function(req, res){
+  jokes.push(req.body);
+  res.send(jokes);
 });
 
 // Start the server!
